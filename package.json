@@ -1,0 +1,39 @@
+{
+  "name": "sekka",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "tsc --noEmit",
+    "test": "node tests/run.mjs",
+    "test:db": "node tests/db/sekka.test.mjs",
+    "test:assistant": "node tests/assistant/assistant.test.mjs",
+    "demo:build": "VITE_SUPABASE_URL=http://localhost:4173 VITE_SUPABASE_ANON_KEY=demo-anon-key vite build --outDir dist-demo",
+    "build:web-demo": "node dev/build-snapshot.mjs && tsc -b && VITE_DEMO_BROWSER=1 vite build --outDir dist-web",
+    "demo": "npm run demo:build && node dev/server.mjs",
+    "test:e2e": "node tests/e2e/e2e.mjs"
+  },
+  "dependencies": {
+    "@fontsource/readex-pro": "^5.3.0",
+    "@supabase/supabase-js": "^2.45.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.12",
+    "@types/node": "^20.19.43",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "esbuild": "^0.21.5",
+    "playwright": "^1.65.1",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  },
+  "description": "Sekka — operations hub for university student-transport companies: live bus tracking (Uber-style), student assistant, automatic renewals, bus planning from demand, predictive maintenance, role-based confidential data (React, TypeScript, Supabase)",
+  "license": "MIT"
+}

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>Sekka stage</title>
+<style>
+@font-face{font-family:RX;font-weight:400;src:url(/__stage/readex-pro-arabic-400-normal.woff2);unicode-range:U+0600-06FF,U+200C-200E,U+2010-2011,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:RX;font-weight:600;src:url(/__stage/readex-pro-arabic-600-normal.woff2);unicode-range:U+0600-06FF,U+200C-200E,U+2010-2011,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:RX;font-weight:700;src:url(/__stage/readex-pro-arabic-700-normal.woff2);unicode-range:U+0600-06FF,U+200C-200E,U+2010-2011,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:RX;font-weight:400;src:url(/__stage/readex-pro-latin-400-normal.woff2);unicode-range:U+0000-00FF}
+@font-face{font-family:RX;font-weight:600;src:url(/__stage/readex-pro-latin-600-normal.woff2);unicode-range:U+0000-00FF}
+@font-face{font-family:RX;font-weight:700;src:url(/__stage/readex-pro-latin-700-normal.woff2);unicode-range:U+0000-00FF}
+*{box-sizing:border-box;margin:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#1b1030;font-family:RX,sans-serif;color:#fff}
+body{background:radial-gradient(900px 600px at 85% -10%,rgba(255,122,69,.38),transparent 60%),radial-gradient(800px 700px at 0% 110%,rgba(138,116,224,.28),transparent 60%),linear-gradient(160deg,#2b1b4b,#150b27)}
+.brand{position:absolute;display:flex;align-items:center;gap:16px}
+.logo{width:56px;height:56px;border-radius:17px;background:linear-gradient(135deg,#ff7a45,#ffb547);display:grid;place-items:center;box-shadow:0 8px 22px rgba(255,122,69,.4)}
+.logo svg{width:32px;height:32px;stroke:#1b1030;fill:none;stroke-width:2.2;stroke-linecap:round}
+.brand b{font-size:34px;font-weight:700;display:block;line-height:1.1}.brand span{font-size:17px;opacity:.65}
+.tag{position:absolute;font-size:16px;font-weight:600;background:#ffe5d2;color:#9a3d12;border:1.5px dashed #e8a67b;border-radius:99px;padding:6px 16px}
+.frame{direction:ltr;position:absolute;overflow:hidden;background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.frame iframe{position:absolute;left:0;top:0;border:0;display:block;transform-origin:0 0;background:#f6f1e8}
+.phone{border-radius:44px;border:10px solid #0d0618;outline:2px solid rgba(255,255,255,.14)}
+.desk{border-radius:16px;border:1.5px solid rgba(255,255,255,.18)}
+#cap{position:absolute;left:50%;transform:translateX(-50%);text-align:center;transition:opacity .35s,transform .35s;opacity:0}
+#cap.on{opacity:1}
+#cap .t{display:inline-block;background:linear-gradient(135deg,#ff7a45,#ffa04a);color:#1b1030;font-weight:700;border-radius:20px;padding:14px 34px;box-shadow:0 12px 30px rgba(255,122,69,.35)}
+#cap .s{margin-top:10px;opacity:.78;font-weight:400}
+#cur{position:absolute;width:30px;height:30px;z-index:50;pointer-events:none;transition:left .55s cubic-bezier(.4,0,.2,1),top .55s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 3px 5px rgba(0,0,0,.5))}
+.rip{position:absolute;width:20px;height:20px;border-radius:50%;border:3px solid #ffb547;z-index:49;pointer-events:none;animation:rip .6s ease-out forwards;margin:-10px 0 0 -10px}
+@keyframes rip{to{transform:scale(3.2);opacity:0}}
+#card{position:absolute;inset:0;z-index:60;display:grid;place-items:center;text-align:center;background:linear-gradient(160deg,#2b1b4b,#150b27);transition:opacity .6s;opacity:0;pointer-events:none}
+#card.on{opacity:1}#card h1{font-weight:700;line-height:1.25}#card p{opacity:.75;margin-top:18px}
+#card .logo{margin:0 auto 26px}
+</style></head><body>
+<div id="app"></div>
+<div id="card"><div><div class="logo" style="width:96px;height:96px;border-radius:28px"><svg viewBox="0 0 24 24" style="width:56px;height:56px"><path d="M4 18c4 0 4-12 8-12s4 12 8 12"/><circle cx="4" cy="18" r="1.4" fill="#1b1030"/><circle cx="20" cy="18" r="1.4" fill="#1b1030"/></svg></div><h1 id="ct"></h1><p id="cs"></p></div></div>
+<svg id="cur" viewBox="0 0 24 24" style="left:50%;top:50%"><path d="M5 3l14 8-6 2 3.5 6.5-3 1.5L10 14.5 6 19z" fill="#fff" stroke="#1b1030" stroke-width="1.5" stroke-linejoin="round"/></svg>
+<div id="cap"><div class="t"></div><div class="s"></div></div>
+<script>
+const q = new URLSearchParams(location.search), mode = q.get('mode') || 'h'
+const W = innerWidth, H = innerHeight
+const app = document.getElementById('app')
+const logo = '<div class="logo"><svg viewBox="0 0 24 24"><path d="M4 18c4 0 4-12 8-12s4 12 8 12"/><circle cx="4" cy="18" r="1.4" fill="#1b1030"/><circle cx="20" cy="18" r="1.4" fill="#1b1030"/></svg></div>'
+function frame(cls, x, y, w, h, iw, ih, id, src) {
+  const s = w / iw
+  return `<div class="frame ${cls}" style="left:${x}px;top:${y}px;width:${w + 20 * (cls === 'phone')}px;height:${h + 20 * (cls === 'phone')}px"><iframe id="${id}" src="${src}" style="width:${iw}px;height:${ih}px;transform:scale(${s})"></iframe></div>`
+}
+const cap = document.getElementById('cap')
+if (mode === 'h') {
+  // 1920x1080: phone on the right (RTL reading starts there), dashboard on the left
+  app.innerHTML = `<div class="brand" style="right:90px;top:42px">${logo}<div><b>سكّة</b><span>مواصلات جامعية مضمونة وفي معادها</span></div></div><div class="tag" style="left:90px;top:56px">نسخة تجريبية · بيانات وهمية</div>`
+    + frame('desk', 90, 130, 1160, 725, 1440, 900, 'desk', '/staff/login')
+    + frame('phone', 1330, 118, 400, 780, 400, 780, 'phone', '/chat')
+  cap.style.cssText = 'bottom:44px;width:1500px'; cap.querySelector('.t').style.fontSize = '38px'; cap.querySelector('.s').style.fontSize = '22px'
+} else {
+  // 1080x1920
+  app.innerHTML = `<div class="brand" style="right:70px;top:70px">${logo}<div><b>سكّة</b><span>مواصلات جامعية مضمونة وفي معادها</span></div></div><div class="tag" style="left:70px;top:84px">نسخة تجريبية</div>`
+    + frame('phone', 150, 230, 760, 1480, 400, 780, 'phone', '/chat')
+  cap.style.cssText = 'bottom:70px;width:940px'; cap.querySelector('.t').style.fontSize = '46px'; cap.querySelector('.s').style.fontSize = '27px'
+}
+window.cap = (t, s) => { if (!t) { cap.classList.remove('on'); return } cap.querySelector('.t').textContent = t; cap.querySelector('.s').textContent = s || ''; cap.querySelector('.s').style.display = s ? 'block' : 'none'; cap.classList.add('on') }
+window.card = (t, s) => { const c = document.getElementById('card'); document.getElementById('ct').textContent = t || ''; document.getElementById('cs').textContent = s || ''; document.getElementById('ct').style.fontSize = (mode === 'h' ? 64 : 70) + 'px'; document.getElementById('cs').style.fontSize = (mode === 'h' ? 30 : 34) + 'px'; c.classList.toggle('on', !!t) }
+window.cur = (x, y) => { const c = document.getElementById('cur'); c.style.left = x + 'px'; c.style.top = y + 'px' }
+window.rip = (x, y) => { const r = document.createElement('div'); r.className = 'rip'; r.style.left = x + 'px'; r.style.top = y + 'px'; document.body.appendChild(r); setTimeout(() => r.remove(), 700) }
+</script></body></html>
